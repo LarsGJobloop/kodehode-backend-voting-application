@@ -1,6 +1,21 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+internal class Program
+{
+  private static void Main(string[] args)
+  {
+    var builder = WebApplication.CreateBuilder(args);
+    var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+    VotingService votingService = new VotingService();
 
-app.Run();
+    app.MapGet("/health", () => "Healthy");
+
+    app.MapPost("/valg", () =>
+    {
+      Election newElection = votingService.AddNewElection();
+
+      return Results.Ok(new { id = $"/valg/{newElection.id}" });
+    });
+
+    app.Run();
+  }
+}
